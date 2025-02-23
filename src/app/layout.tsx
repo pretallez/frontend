@@ -1,5 +1,8 @@
 import "./globals.scss";
 
+import Header from "@/components/header/header";
+import Footer from "@/components/footer/footer";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -7,7 +10,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <Header />
+        {children}
+        <Footer />
+      </body>
     </html>
   );
 }
