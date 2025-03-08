@@ -5,6 +5,7 @@ import Footer from "@/components/footer/footer";
 
 import "./globals.scss";
 import StoreProvider from "./store-provider";
+import CommonSheet from "./common-sheet";
 
 export const metadata: Metadata = {
   title: "pretallez",
@@ -23,6 +24,7 @@ export default function RootLayout({
           <Header />
           {children}
           <Footer />
+          <CommonSheet />
         </StoreProvider>
       </body>
     </html>
