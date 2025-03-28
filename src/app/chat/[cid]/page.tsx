@@ -11,7 +11,7 @@ import { Menu, Send, Paperclip, Smile, ChevronLeft } from "lucide-react";
 
 import styles from "@/styles/chat.module.scss";
 import ChatRoomMenu from "@/components/chat/chatroom-menu";
-import ChatItem from "@/components/chat/chat-item";
+import ChatItem, { ChatItemProps } from "@/components/chat/chat-item";
 
 type Params = {
   cid: string;
@@ -19,7 +19,7 @@ type Params = {
 
 interface Chat {
   chatRoomList: any[];
-  chatList: any[];
+  chatList: ChatItemProps[];
   menu: {
     isOpen: boolean;
   };

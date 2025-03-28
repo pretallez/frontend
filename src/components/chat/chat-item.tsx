@@ -3,11 +3,16 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 import styles from "@/styles/chat-item.module.scss";
 
-interface ChatItem {
+export interface ChatItemProps {
   isMyChat?: boolean;
+  chatroomId?: number;
+  memberId?: number;
+  content?: string;
+  messaeType?: string;
+  createdAt?: string;
 }
 
-const ChatItem: FunctionComponent<ChatItem> = ({ isMyChat }) => {
+const ChatItem: FunctionComponent<ChatItemProps> = ({ isMyChat }) => {
   return (
     <li
       className={`flex w-full gap-x-3 px-2 py-3 ${styles["chat-item"]} ${
