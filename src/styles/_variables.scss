@@ -1,8 +1,16 @@
 // Heights
 $height-header: 64px;
+$height-chat-header: 54px;
+$height-chat-input: 50px;
 
 // Widths
 $width-container: 1200px;
+$width-chat-left: 290px;
+$width-chat-input-btn: 25px;
+$width-chatroom-menu: 256px;
+
+// Paddings
+$padding-aside-main: 16px;
 
 // Breakpoints
 $breakpoint-xs: 480px;
@@ -10,6 +18,27 @@ $breakpoint-sm: 768px;
 $breakpoint-md: 1024px;
 $breakpoint-lg: 1280px;
 $breakpoint-xl: 1440px;
+
+// Palette
+$color-primary: #3498db;
+$color-secondary: #9b59b6;
+$color-accent: #e67e22;
+$color-success: #2ecc71;
+$color-warning: #f1c40f;
+$color-error: #e74c3c;
+$color-info: #1abc9c;
+
+$color-neutral-50: #fafafa;
+$color-neutral-100: #f5f5f5;
+$color-neutral-200: #e5e5e5;
+$color-neutral-300: #d4d4d4;
+$color-neutral-400: #a3a3a3;
+$color-neutral-500: #737373;
+$color-neutral-600: #525252;
+$color-neutral-700: #404040;
+$color-neutral-800: #262626;
+$color-neutral-900: #171717;
+$color-neutral-950: #0a0a0a;
 
 $breakpoint-xs-end: $breakpoint-xs;
 $breakpoint-sm-start: $breakpoint-xs + 1;

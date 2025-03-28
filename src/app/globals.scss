@@ -11,14 +11,11 @@ html {
 }
 
 body {
-  padding-top: vars.$height-header;
   box-sizing: border-box;
   position: relative;
   display: flex;
   justify-content: center;
 }
-
-
 
 @layer base {
   :root {
@@ -75,8 +72,6 @@ body {
     --chart-5: 340 75% 55%;
   }
 }
-
-
 
 @layer base {
   * {

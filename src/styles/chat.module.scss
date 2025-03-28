@@ -1,0 +1,138 @@
+@use "variables" as vars;
+
+.chat {
+  margin-top: vars.$height-header;
+  height: calc(100vh - vars.$height-header - 20px);
+  width: 100%;
+  max-width: vars.$breakpoint-lg;
+  overflow-y: hidden;
+  overflow-x: hidden;
+}
+
+.left {
+  height: 100%;
+  width: vars.$width-chat-left;
+  box-sizing: border-box;
+}
+
+.left > ul {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 100%;
+  box-sizing: border-box;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  &::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+}
+
+.right {
+  box-sizing: border-box;
+  width: calc(100% - vars.$width-chat-left);
+}
+
+.right > .chat-header {
+  height: vars.$height-chat-header;
+}
+
+.scroll-area {
+  height: calc(100vh - vars.$height-header);
+}
+
+.input-area {
+  height: vars.$height-chat-input;
+}
+
+.input-area svg {
+  width: vars.$width-chat-input-btn !important;
+  height: vars.$width-chat-input-btn !important;
+}
+
+.input-area > textarea {
+  resize: none;
+  border: 0;
+  height: 1.55em;
+  &:focus {
+    outline: none;
+  }
+}
+
+.chat-content {
+  background: vars.$color-neutral-100;
+}
+
+.submit-container {
+  width: vars.$height-chat-input;
+}
+
+.send-icon {
+  color: vars.$color-primary;
+}
+
+.emoji-icon {
+  color: vars.$color-neutral-400;
+}
+
+.clip-icon {
+  color: vars.$color-neutral-400;
+}
+
+.menu-container {
+  position: absolute;
+}
+
+.chat-content {
+  overflow-x: hidden;
+  overflow-y: scroll;
+  height: calc(100% - vars.$height-chat-header - vars.$height-chat-input);
+}
+
+@include vars.media-xs {
+  .left.shrink {
+    display: none;
+  }
+  .left.expanded {
+    width: 100%;
+  }
+  .right.expanded {
+    width: 100%;
+  }
+  .right.shrink {
+    display: none;
+  }
+}
+
+@include vars.media-sm {
+  .left.shrink {
+    display: none;
+  }
+  .left.expanded {
+    width: 100%;
+  }
+  .right.expanded {
+    width: 100%;
+  }
+  .right.shrink {
+    display: none;
+  }
+}
+
+@include vars.media-md {
+  .toggle-responsive-btn {
+    display: none;
+  }
+}
+
+@include vars.media-lg {
+  .toggle-responsive-btn {
+    display: none;
+  }
+}
+
+@include vars.media-xl {
+  .toggle-responsive-btn {
+    display: none;
+  }
+}

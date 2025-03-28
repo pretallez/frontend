@@ -1,0 +1,17 @@
+@use "variables" as vars;
+
+.chat-item.my {
+  flex-direction: row-reverse;
+  & .nickname {
+    text-align: right;
+  }
+  & .msg {
+    text-align: right;
+    background-color: vars.$color-primary;
+    color: white;
+  }
+}
+
+.msg {
+  background-color: white;
+}

@@ -1,10 +1,7 @@
 "use client";
 import { RootState } from "@/redux/store";
-
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-
 import { toggle } from "@/redux/slices/sheet-slice";
-
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import {
@@ -44,6 +41,7 @@ export default function CommonSheet() {
   return (
     <Sheet
       open={isOpen}
+      modal={false}
       onOpenChange={() => {
         onOpenChange();
       }}
