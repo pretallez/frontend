@@ -6,6 +6,7 @@ import { useAppDispatch } from "@/redux/hooks";
 import { open } from "@/redux/slices/sheet-slice";
 
 import styles from "@/styles/header.module.scss";
+import HomeLink from "../link/homeLink";
 
 export default function Header() {
   const dispatch = useAppDispatch();
@@ -15,9 +16,13 @@ export default function Header() {
   }
 
   return (
-    <header className={`${styles["header"]} flex justify-center`}>
+    <header
+      className={`${styles["header"]} border boder-b flex justify-center`}
+    >
       <div className={`${styles["container"]} flex`}>
-        <div className="flex-1 justify-start"></div>
+        <div className="flex-1 flex items-center justify-start">
+          <HomeLink href="/" />
+        </div>
         <div className="flex-1 flex items-center justify-end">
           <Avatar className="cursor-pointer" onClick={onClickAvatar}>
             <AvatarImage

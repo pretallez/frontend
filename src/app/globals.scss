@@ -1,5 +1,12 @@
 @use "../styles/variables" as vars;
 
+@font-face {
+  font-family: "Pretendard";
+  src: url("/fonts/pretendard/Pretendard-Regular.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -8,6 +15,10 @@ body,
 html {
   padding: 0;
   margin: 0;
+}
+
+body * {
+  font-family: "Pretendard";
 }
 
 body {

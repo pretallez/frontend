@@ -1,8 +1,9 @@
 "use client";
 import { RootState } from "@/redux/store";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { toggle } from "@/redux/slices/sheet-slice";
+import { toggle, close } from "@/redux/slices/sheet-slice";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useRouter } from "next/navigation";
 
 import {
   Sheet,
@@ -13,7 +14,6 @@ import {
 
 import {
   Command,
-  CommandEmpty,
   CommandGroup,
   CommandItem,
   CommandList,
@@ -26,13 +26,14 @@ import {
   Calendar,
   CreditCard,
   Settings,
-  Smile,
   User,
+  MessageCircle,
 } from "lucide-react";
 
 export default function CommonSheet() {
   const isOpen = useAppSelector((state: RootState) => state.sheet.isOpen);
   const dispatch = useAppDispatch();
+  const router = useRouter();
 
   function onOpenChange() {
     dispatch(toggle());
@@ -73,9 +74,14 @@ export default function CommonSheet() {
                 <Calendar />
                 <span>Calendar</span>
               </CommandItem>
-              <CommandItem>
-                <Smile />
-                <span>Search Emoji</span>
+              <CommandItem
+                onSelect={() => {
+                  dispatch(close());
+                  router.push(`/chat/32`);
+                }}
+              >
+                <MessageCircle />
+                <span>Chat test</span>
               </CommandItem>
               <CommandItem disabled>
                 <Calculator />

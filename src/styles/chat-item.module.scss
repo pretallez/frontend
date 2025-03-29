@@ -4,6 +4,7 @@
   & .msg {
     box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px,
       rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+    border-radius: 0 0.325rem 0.325rem 0.325rem;
   }
 }
 
@@ -16,6 +17,7 @@
     text-align: right;
     background-color: vars.$color-primary;
     color: white;
+    border-radius: 0.325rem 0 0.325rem 0.325rem;
   }
 }
 

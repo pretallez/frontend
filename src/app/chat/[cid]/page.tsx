@@ -7,7 +7,7 @@ import ChatroomListItem from "@/components/chat/chatroom-list-item";
 
 import { Button } from "@/components/ui/button";
 
-import { Menu, Send, Paperclip, Smile, ChevronLeft } from "lucide-react";
+import { Menu, Send, Smile, ChevronLeft } from "lucide-react";
 
 import styles from "@/styles/chat.module.scss";
 import ChatRoomMenu from "@/components/chat/chatroom-menu";
@@ -26,8 +26,36 @@ interface Chat {
   responsive: string;
 }
 
+const dChats: ChatItemProps[] = [
+  {
+    isMyChat: false,
+    id: 1,
+    createdAt: "Fri Mar 28 2025 15:40:22",
+    name: "홍길동",
+    content: "안녕하세요",
+    profileImgSrc: "https://picsum.photos/seed/zxl21/200/200",
+  },
+  {
+    isMyChat: false,
+    id: 2,
+    createdAt: "Fri Mar 28 2025 15:42:09",
+    name: "이자성",
+    content: "오랜만이에요 홍길동님",
+    profileImgSrc: "https://picsum.photos/seed/2210azz/200/200",
+  },
+  {
+    isMyChat: true,
+    id: 3,
+    createdAt: "Fri Mar 28 2025 15:43:12",
+    name: "박연",
+    content: "어서오세요",
+    profileImgSrc: "https://picsum.photos/seed/qpo121/200/200",
+  },
+];
+
 export default function Chat() {
   const params = useParams<Params>();
+
   const [state, setState] = useState<Chat>({
     chatList: [],
     chatRoomList: [],
@@ -112,28 +140,14 @@ export default function Chat() {
             </div>
           </div>
           <div className={`${styles["chat-content"]}`}>
-            <ul className="p-0 m-0 h-full">
-              <ChatItem />
-              <ChatItem />
-              <ChatItem isMyChat={true} />
-              <ChatItem />
-              <ChatItem isMyChat={true} />
-              <ChatItem />
-              <ChatItem />
-              <ChatItem />
-              <ChatItem />
-              <ChatItem />
+            <ul className="py-3 m-0 h-full">
+              {dChats.map((item) => (
+                <ChatItem key={item.id} {...item} />
+              ))}
             </ul>
           </div>
           <div className={`${styles["input-area"]} flex items-center px-2`}>
             <div className="flex items-center gap-x-1">
-              <Button
-                className="rounded-full hover:bg-transparent"
-                variant="ghost"
-                size="icon"
-              >
-                <Paperclip className={`${styles["clip-icon"]}`} />
-              </Button>
               <Button
                 className="rounded-full hover:bg-transparent"
                 variant="ghost"

@@ -7,6 +7,9 @@ import CommonSheet from "./common-sheet";
 export const metadata: Metadata = {
   title: "pretallez",
   description: "frontend",
+  icons: {
+    icon: "/favicon/favicon.ico",
+  },
 };
 
 export default function RootLayout({
