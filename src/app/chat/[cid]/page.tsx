@@ -1,13 +1,14 @@
 "use client";
-import { MouseEventHandler, useState } from "react";
+import { MouseEventHandler, useEffect, useState, useRef } from "react";
 import { useParams } from "next/navigation";
+import * as StompJs from "@stomp/stompjs";
 
 import Header from "@/components/header/header";
 import ChatroomListItem from "@/components/chat/chatroom-list-item";
 
 import { Button } from "@/components/ui/button";
 
-import { Menu, Send, Smile, ChevronLeft } from "lucide-react";
+import { Menu, Send, Smile, ChevronLeft, Cone } from "lucide-react";
 
 import styles from "@/styles/chat.module.scss";
 import ChatRoomMenu from "@/components/chat/chatroom-menu";
@@ -51,10 +52,36 @@ const dChats: ChatItemProps[] = [
     content: "어서오세요",
     profileImgSrc: "https://picsum.photos/seed/qpo121/200/200",
   },
+  {
+    isMyChat: false,
+    id: 4,
+    createdAt: "Fri Mar 28 2025 15:43:47",
+    name: "방장",
+    content: "오늘 모임 있는거 아시죠?",
+    profileImgSrc: "https://picsum.photos/seed/ddje211/200/200",
+  },
+  {
+    isMyChat: true,
+    id: 5,
+    createdAt: "Fri Mar 28 2025 15:45:22",
+    name: "박연",
+    content: "몰랐는데",
+    profileImgSrc: "https://picsum.photos/seed/qpo121/200/200",
+  },
 ];
 
 export default function Chat() {
+  useEffect(() => {
+    connect();
+  }, []);
+
   const params = useParams<Params>();
+
+  const [stompClient, setStompClient] = useState<StompJs.Client | null>(null);
+  const [msg, setMsg] = useState<string>("");
+  const [count, setCount] = useState<number>(2322);
+
+  const chatScrollRef = useRef<HTMLDivElement>(null);
 
   const [state, setState] = useState<Chat>({
     chatList: [],
@@ -64,6 +91,37 @@ export default function Chat() {
     },
     responsive: "right",
   });
+
+  const connect = () => {
+    const client = new StompJs.Client({
+      brokerURL: "ws://192.168.0.11:3000/ws",
+      onConnect: (event) => {
+        setStompClient(client);
+        client.subscribe("/v1/api/chatrooms/1", (msg) => {
+          const parsed = JSON.parse(msg.body);
+          setState((prev) => {
+            const newItem = {
+              isMyChat: false,
+              id: parsed.createdAt as string,
+              name: parsed.nickname,
+              createdAt: parsed.createdAt,
+              content: parsed.content,
+              profileImgSrc: `https://picsum.photos/seed/qpo121/200/200`,
+            };
+            const newState = { ...prev, chatList: [...prev.chatList, newItem] };
+            return newState;
+          });
+          setTimeout(() => {
+            if (chatScrollRef.current) {
+              chatScrollRef.current.scrollTop =
+                chatScrollRef.current.scrollHeight;
+            }
+          }, 10);
+        });
+      },
+    });
+    client.activate();
+  };
 
   const openMenu: MouseEventHandler<HTMLButtonElement> = (event) => {
     setState((prev) => ({
@@ -139,10 +197,10 @@ export default function Chat() {
               </Button>
             </div>
           </div>
-          <div className={`${styles["chat-content"]}`}>
+          <div ref={chatScrollRef} className={`${styles["chat-content"]}`}>
             <ul className="py-3 m-0 h-full">
-              {dChats.map((item) => (
-                <ChatItem key={item.id} {...item} />
+              {state.chatList.map((item) => (
+                <ChatItem key={item.id + "_" + item.content} {...item} />
               ))}
             </ul>
           </div>
@@ -156,7 +214,29 @@ export default function Chat() {
                 <Smile className={`${styles["emoji-icon"]}`} />
               </Button>
             </div>
-            <textarea className="px-4 m-0 grow"></textarea>
+            <textarea
+              className="px-4 m-0 grow"
+              value={msg}
+              onChange={(event) => {
+                setMsg(event.target.value);
+              }}
+              onKeyUp={(event) => {
+                if (event.key === "Enter" && !event.shiftKey) {
+                  if (stompClient && msg.trim()) {
+                    stompClient.publish({
+                      destination: "/v1/api/chats",
+                      body: JSON.stringify({
+                        memberId: 1,
+                        chatroomId: 1,
+                        content: msg.trim(),
+                        messageType: "CHAT",
+                      }),
+                    });
+                    setMsg("");
+                  }
+                }
+              }}
+            ></textarea>
             <div
               className={`${styles["submit-container"]} flex justify-center items-center`}
             >
@@ -164,6 +244,20 @@ export default function Chat() {
                 className="rounded-full hover:bg-transparent"
                 variant="ghost"
                 size="icon"
+                onClick={() => {
+                  if (stompClient && msg) {
+                    stompClient.publish({
+                      destination: "/v1/api/chats",
+                      body: JSON.stringify({
+                        memberId: 1,
+                        chatroomId: 1,
+                        content: msg,
+                        messageType: "CHAT",
+                      }),
+                    });
+                    setMsg("");
+                  }
+                }}
               >
                 <Send className={`${styles["send-icon"]}`} />
               </Button>
