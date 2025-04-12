@@ -1,12 +1,12 @@
 @use "variables" as vars;
 
 .chat {
-  margin-top: vars.$height-header;
-  height: calc(100vh - vars.$height-header - 20px);
+  height: calc(var(--vh, 1vh) * 100 - env(safe-area-inset-bottom));
   width: 100%;
   max-width: vars.$breakpoint-lg;
   overflow-y: hidden;
   overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 .left {
@@ -42,7 +42,19 @@
 }
 
 .input-area {
-  height: vars.$height-chat-input;
+  min-height: vars.$height-chat-input;
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  background-color: #fff;
+  & .input-area-left {
+    height: vars.$height-chat-input;
+    display: flex;
+    align-items: center;
+  }
 }
 
 .input-area svg {
@@ -50,21 +62,22 @@
   height: vars.$width-chat-input-btn !important;
 }
 
-.input-area > textarea {
-  resize: none;
+.input-area textarea {
   border: 0;
-  height: 1.55em;
+  display: flex;
+  padding: 8px;
+  box-sizing: border-box;
+  height: vars.$height-chat-input;
+  resize: none;
   &:focus {
     outline: none;
   }
 }
 
-.chat-content {
-  background: vars.$color-neutral-100;
-}
-
 .submit-container {
-  width: vars.$height-chat-input;
+  display: flex;
+  align-items: center;
+  height: vars.$height-chat-input;
 }
 
 .send-icon {
@@ -86,7 +99,11 @@
 .chat-content {
   overflow-x: hidden;
   overflow-y: scroll;
-  height: calc(100% - vars.$height-chat-header - vars.$height-chat-input);
+  height: calc(100% - vars.$height-chat-header);
+  background-color: vars.$color-neutral-100;
+  & > ul {
+    box-sizing: border-box;
+  }
 }
 
 @include vars.media-xs {

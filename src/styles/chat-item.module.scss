@@ -6,6 +6,18 @@
       rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
     border-radius: 0 0.325rem 0.325rem 0.325rem;
   }
+  & pre {
+    max-width: vars.$width-max-chat;
+  }
+  .msg-box {
+    position: relative;
+    display: flex;
+    gap: 6px;
+    & > .time {
+      align-self: flex-end;
+      padding-bottom: 6px;
+    }
+  }
 }
 
 .chat-item.my {
@@ -18,6 +30,16 @@
     background-color: vars.$color-primary;
     color: white;
     border-radius: 0.325rem 0 0.325rem 0.325rem;
+  }
+  .msg-box {
+    position: relative;
+    display: flex;
+    gap: 6px;
+    flex-direction: row-reverse;
+    & > .time {
+      align-self: flex-end;
+      padding-bottom: 6px;
+    }
   }
 }
 

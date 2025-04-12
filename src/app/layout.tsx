@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   icons: {
     icon: "/favicon/favicon.ico",
   },
+  viewport: "width=device-width, initial-scale=1",
 };
 
 export default function RootLayout({

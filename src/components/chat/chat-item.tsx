@@ -22,7 +22,7 @@ const formatTime = (timestamp: string | Date) => {
   const now = dayjs();
   const target = dayjs(timestamp);
   if (now.isSame(target, "day")) {
-    return target.format("A h:mm");
+    return target.format("A h:mm").replaceAll("AM", "오전");
   } else {
     return target.format("YYYY.M.D");
   }
@@ -47,20 +47,23 @@ const ChatItem: FunctionComponent<ChatItemProps> = ({
           <AvatarFallback>CR</AvatarFallback>
         </Avatar>
       </div>
-      <div className="h-[100px] w-[350px] flex flex-col pt-[4px]">
+      <div className="flex flex-col pt-[4px]">
         <div
           className={`text-sm font-medium leading-none ${styles["nickname"]}`}
         >
           {name}
         </div>
-        <div className={`${styles["tail"]}`}></div>
-        <pre
-          className={`text-sm font-medium leading-none w-full my-2 ${styles["msg"]} px-3 pt-3 pb-3`}
-        >
-          {content}
-        </pre>
-        <div className="w-full text-right text-xs text-muted-foreground">
-          {formatTime(createdAt)}
+        <div className={styles["msg-box"]}>
+          <span>
+            <pre
+              className={`text-sm font-medium leading-3 whitespace-pre-wrap my-2 ${styles["msg"]} px-3 pt-3 pb-3`}
+            >
+              {content}
+            </pre>
+          </span>
+          <span className={`text-xs text-muted-foreground ${styles["time"]}`}>
+            {formatTime(createdAt)}
+          </span>
         </div>
       </div>
     </li>
