@@ -1,0 +1,13 @@
+@use "variables" as vars;
+
+.chatroom-menu {
+  position: absolute;
+  right: 0;
+  width: vars.$width-chatroom-menu;
+  height: 100%;
+  z-index: 2;
+  display: none;
+  &.open {
+    display: block;
+  }
+}

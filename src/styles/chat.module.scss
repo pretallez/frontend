@@ -1,0 +1,159 @@
+@use "variables" as vars;
+
+.chat {
+  height: calc(
+    var(--vh, 1vh) * 100 - env(safe-area-inset-bottom) - vars.$height-header
+  );
+  width: 100%;
+  max-width: vars.$breakpoint-lg;
+  overflow-y: hidden;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+.left {
+  height: 100%;
+  width: vars.$width-chat-left;
+  box-sizing: border-box;
+}
+
+.left > ul {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  height: 100%;
+  box-sizing: border-box;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.left > .chat-room-header {
+  height: vars.$height-chat-header;
+}
+
+.right {
+  box-sizing: border-box;
+  width: calc(100% - vars.$width-chat-left);
+}
+
+.right > .chat-header {
+  height: vars.$height-chat-header;
+}
+
+.scroll-area {
+  height: calc(100vh - vars.$height-header);
+}
+
+.input-area {
+  min-height: vars.$height-chat-input;
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  background-color: #fff;
+  & .input-area-left {
+    height: vars.$height-chat-input;
+    display: flex;
+    align-items: center;
+  }
+}
+
+.input-area svg {
+  width: vars.$width-chat-input-btn !important;
+  height: vars.$width-chat-input-btn !important;
+}
+
+.input-area textarea {
+  border: 0;
+  display: flex;
+  padding: 8px;
+  box-sizing: border-box;
+  height: vars.$height-chat-input;
+  resize: none;
+  &:focus {
+    outline: none;
+  }
+}
+
+.submit-container {
+  display: flex;
+  align-items: center;
+  height: vars.$height-chat-input;
+}
+
+.send-icon {
+  color: vars.$color-primary;
+}
+
+.emoji-icon {
+  color: vars.$color-neutral-400;
+}
+
+.clip-icon {
+  color: vars.$color-neutral-400;
+}
+
+.menu-container {
+  position: absolute;
+}
+
+.chat-content {
+  overflow-x: hidden;
+  overflow-y: scroll;
+  height: calc(100% - vars.$height-chat-header - vars.$height-chat-input);
+  background-color: vars.$color-neutral-100;
+  & > ul {
+    box-sizing: border-box;
+    height: 100%;
+  }
+}
+
+@include vars.media-xs {
+  .left.shrink {
+    display: none;
+  }
+  .left.expanded {
+    width: 100%;
+  }
+  .right.expanded {
+    width: 100%;
+  }
+  .right.shrink {
+    display: none;
+  }
+}
+
+@include vars.media-sm {
+  .left.shrink {
+    display: none;
+  }
+  .left.expanded {
+    width: 100%;
+  }
+  .right.expanded {
+    width: 100%;
+  }
+  .right.shrink {
+    display: none;
+  }
+}
+
+@include vars.media-md {
+  .toggle-responsive-btn {
+    display: none;
+  }
+}
+
+@include vars.media-lg {
+  .toggle-responsive-btn {
+    display: none;
+  }
+}
+
+@include vars.media-xl {
+  .toggle-responsive-btn {
+    display: none;
+  }
+}

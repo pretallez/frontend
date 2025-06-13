@@ -1,9 +1,16 @@
-import { Metadata } from "next";
+"use client";
 
-export const metadata: Metadata = {
-  title: "pretallez",
-  description: "frontend",
-};
+import Footer from "@/components/footer/footer";
+import Header from "@/components/header/header";
+
+import styles from "@/styles/index.module.scss";
+
 export default function Home() {
-  return <div className="home">Test</div>;
+  return (
+    <>
+      <Header />
+      <main className={`${styles["index"]} text-white`}>main</main>
+      <Footer />
+    </>
+  );
 }

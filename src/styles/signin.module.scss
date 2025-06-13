@@ -1,0 +1,39 @@
+@use "variables" as vars;
+
+.signin {
+  display: flex;
+  justify-content: center;
+  height: 100vh;
+  padding-top: 100px;
+  width: 100%;
+  & > .container {
+    max-width: 360px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 48px;
+    & > .btn-group {
+      width: 100%;
+    }
+  }
+
+  & button:hover {
+    background-color: transparent;
+  }
+}
+
+@include vars.media-xs {
+}
+
+@include vars.media-sm {
+}
+
+@include vars.media-md {
+}
+
+@include vars.media-lg {
+}
+
+@include vars.media-xl {
+}

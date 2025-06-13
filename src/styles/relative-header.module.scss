@@ -1,0 +1,29 @@
+@use "variables" as vars;
+
+.relative-header {
+  width: 100%;
+  height: vars.$height-header;
+  box-sizing: border-box;
+
+  & > .container {
+    padding: 0 vars.$padding-aside-main;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: vars.$breakpoint-lg;
+  }
+}
+
+@include vars.media-xs {
+}
+
+@include vars.media-sm {
+}
+
+@include vars.media-md {
+}
+
+@include vars.media-lg {
+}
+
+@include vars.media-xl {
+}
