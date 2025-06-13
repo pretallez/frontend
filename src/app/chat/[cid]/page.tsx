@@ -1,49 +1,44 @@
 "use client";
+
 import { MouseEventHandler, useEffect, useState, useRef } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { WSClient } from "@/ws/ws";
 
-import Header from "@/components/header/header";
 import ChatroomListItem from "@/components/chat/chatroom-list-item";
 import ChatRoomMenu from "@/components/chat/chatroom-menu";
 import ChatItem, { ChatItemProps } from "@/components/chat/chat-item";
 import { Button } from "@/components/ui/button";
 import { Menu, Send, Smile, ChevronLeft } from "lucide-react";
-import styles from "@/styles/chat.module.scss";
 
-type Params = { cid: string };
+import RelativeHeader from "@/components/relative-header/relative-header";
+
+import styles from "@/styles/chat.module.scss";
 
 const CHAT_LIMIT = 5000;
 const CHAT_COUNT = 3;
 const TEXTAREA_HEIGHT = 42;
 
 export default function Chat() {
-  const { cid } = useParams<Params>();
-  const [msg, setMsg] = useState<string>("");
+  const { cid } = useParams();
+  const [msg, setMsg] = useState("");
   const chatScrollRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const router = useRouter();
+
   const [chatList, setChatList] = useState<ChatItemProps[]>([]);
   const [chatRoomList] = useState<any[]>([]);
-  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [responsive, setResponsive] = useState<"left" | "right">("right");
-  const [chatCount, setChatCount] = useState<number>(0);
+  const [chatCount, setChatCount] = useState(0);
+
   const wsClientRef = useRef<WSClient | null>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // 웹소켓 구독 및 발행 설정
   useEffect(() => {
-    if (!cid) return;
-
-    // 이전 클라이언트 연결 해제
-    wsClientRef.current?.disconnect();
-
-    console.log(`[Chat] Connecting to room ${cid}`);
     const wsClient = new WSClient({
-      brokerUrl: "ws://pretallez.xyz:8080/ws",
-      subscriptionDestination: `/sub/chatrooms/${1}`,
-      onMessage: (message) => {
-        console.log("[Chat] Received message:", message.body);
-        const parsed = JSON.parse(message.body);
+      chatRoomId: Number(cid),
+      onMessage: (msg) => {
+        const parsed = JSON.parse(msg.body);
         setChatList((prev) => [
           ...prev,
           {
@@ -52,25 +47,21 @@ export default function Chat() {
             name: parsed.nickname,
             createdAt: parsed.createdAt,
             content: parsed.content,
-            profileImgSrc:
-              parsed.profileImgSrc ||
-              "https://picsum.photos/seed/qpo121/200/200",
+            profileImgSrc: parsed.profileImgSrc || "",
           },
         ]);
-        setTimeout(() => {
-          if (chatScrollRef.current) {
-            chatScrollRef.current.scrollTop =
-              chatScrollRef.current.scrollHeight;
-          }
+
+        timerRef.current = setTimeout(() => {
+          chatScrollRef.current!.scrollTop =
+            chatScrollRef.current!.scrollHeight;
         }, 10);
       },
     });
 
-    wsClient.activate();
+    wsClient.connect();
     wsClientRef.current = wsClient;
 
     return () => {
-      console.log(`[Chat] Disconnecting from room ${cid}`);
       wsClientRef.current?.disconnect();
       if (timerRef.current) clearTimeout(timerRef.current);
     };
@@ -97,105 +88,118 @@ export default function Chat() {
     adjustTextareaHeight();
   };
 
-  // 메시지 발행 (pub)
   const sendMessage = () => {
     if (chatCount > CHAT_COUNT) return;
     if (wsClientRef.current && msg.trim()) {
-      console.log("[Chat] Sending message:", msg.trim());
-      console.log(wsClientRef.current);
-      wsClientRef.current.publish("/pub/v1/api/chats", {
-        senderId: 2,
-        chatRoomId: 1,
+      wsClientRef.current.publish({
+        senderId: 1,
+        chatRoomId: Number(cid),
         content: msg.trim(),
         messageType: "CHAT",
       });
       setMsg("");
-      if (textareaRef.current)
-        textareaRef.current.style.height = `${TEXTAREA_HEIGHT}px`;
-    } else {
-      console.warn(
-        "[Chat] Cannot send message, wsClient not ready or empty msg"
-      );
-    }
+      textareaRef.current!.style.height = `${TEXTAREA_HEIGHT}px`;
 
-    if (chatCount === 0 && !timerRef.current) {
-      timerRef.current = setTimeout(() => {
-        setChatCount(0);
-        timerRef.current = null;
-      }, CHAT_LIMIT);
+      if (chatCount === 0 && !timerRef.current) {
+        timerRef.current = setTimeout(() => {
+          setChatCount(0);
+          timerRef.current = null;
+        }, CHAT_LIMIT);
+      }
+      setChatCount((prev) => prev + 1);
     }
-    setChatCount((prev) => prev + 1);
   };
 
   return (
-    <main className={`${styles.chat} flex`}>
-      <div
-        className={`${styles.left} ${
-          responsive === "right" ? styles.shrink : styles.expanded
-        }`}
-      >
-        ...
-        {/* Chatroom list unchanged */}
-        <ul className="m-0 py-2">
-          {chatRoomList.map((_, i) => (
-            <ChatroomListItem onClick={expandRight} key={i} />
-          ))}
-        </ul>
-      </div>
-      <div
-        className={`${styles.right} ${
-          responsive === "right" ? styles.expanded : styles.shrink
-        } flex flex-col relative overflow-hidden`}
-      >
-        {/* 채팅 헤더 */}
-        <div className={`${styles["chat-header"]} flex px-4 items-center`}>
-          <Button
-            className={`rounded-full ${styles["toggle-responsive-btn"]}`}
-            variant="ghost"
-            size="icon"
-            onClick={expandLeft}
+    <>
+      <div className="flex flex-col w-full items-center">
+        <RelativeHeader />
+        <main className={`${styles["chat"]} flex border-t box-border`}>
+          <div
+            className={`${styles["left"]} ${
+              responsive === "right" ? styles["shrink"] : styles["expanded"]
+            } border-l border-r box-border`}
           >
-            <ChevronLeft />
-          </Button>
-          <p className="text-xl font-bold">ChatRoom {cid}</p>
-          <Button variant="ghost" size="icon" onClick={openMenu}>
-            <Menu />
-          </Button>
-        </div>
-        {/* 채팅 목록 */}
-        <div ref={chatScrollRef} className={`${styles["chat-content"]} flex`}>
-          <ul className="py-3 flex flex-col gap-y-3 box-border w-full">
-            {chatList.map((item) => (
-              <ChatItem key={`${item.id}_${item.content}`} {...item} />
-            ))}
-          </ul>
-        </div>
-        {/* 입력창 */}
-        <div className={`${styles["input-area"]} flex`}>
-          <div className="flex w-full items-end px-3">
-            <div className={`${styles["input-area-left"]}`}>
-              <Button variant="ghost" size="icon">
-                <Smile className={styles["emoji-icon"]} />
-              </Button>
+            <div
+              className={`${styles["chat-room-header"]} p-4 text-md border-b box-border`}
+            >
+              전체
             </div>
-            <textarea
-              ref={textareaRef}
-              className="px-4 m-0 grow resize-none overflow-hidden"
-              value={msg}
-              onChange={handleTextareaChange}
-              onKeyUp={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) sendMessage();
-              }}
-            />
-            <div className={styles["submit-container"]}>
-              <Button variant="ghost" size="icon" onClick={sendMessage}>
-                <Send className={styles["send-icon"]} />
-              </Button>
-            </div>
+            <ul className="m-0 py-2">
+              {Array.from({ length: 2 }).map((_, i) => (
+                <ChatroomListItem
+                  onClick={() => {
+                    router.push(`/chat/${i + 1}`);
+                  }}
+                  key={i}
+                />
+              ))}
+            </ul>
           </div>
-        </div>
-        <ChatRoomMenu isOpen={isMenuOpen} onClose={closeMenu} />
+          <div
+            className={`${styles["right"]} ${
+              responsive === "right" ? styles["expanded"] : styles["shrink"]
+            } flex flex-col relative overflow-hidden border-r box-border`}
+          >
+            <div
+              className={`${styles["chat-header"]} flex px-4 items-center box-border border-b`}
+            >
+              <div className="grow flex items-center gap-x-2">
+                <Button
+                  className={`rounded-full ${styles["toggle-responsive-btn"]}`}
+                  variant="ghost"
+                  size="icon"
+                  onClick={expandLeft}
+                >
+                  <ChevronLeft />
+                </Button>
+                <p className="text-xl font-bold">{`Chatroom : ${cid}`}</p>
+              </div>
+              <div className="grow flex justify-end">
+                <Button variant="ghost" size="icon" onClick={openMenu}>
+                  <Menu />
+                </Button>
+              </div>
+            </div>
+            <div
+              ref={chatScrollRef}
+              className={`${styles["chat-content"]} flex`}
+            >
+              <ul className="py-3 flex flex-col gap-y-1 box-border w-full">
+                {chatList.map((item) => (
+                  <ChatItem key={`${item.id}_${item.content}`} {...item} />
+                ))}
+              </ul>
+            </div>
+            <div className={`${styles["input-area"]} flex`}>
+              <div className="flex w-full items-end px-3">
+                <div className={`${styles["input-area-left"]}`}>
+                  <Button variant="ghost" size="icon">
+                    <Smile className={styles["emoji-icon"]} />
+                  </Button>
+                </div>
+                <textarea
+                  ref={textareaRef}
+                  className="px-4 m-0 grow resize-none overflow-hidden"
+                  value={msg}
+                  onChange={handleTextareaChange}
+                  onKeyUp={(e) => {
+                    if (e.key === "Enter" && !e.shiftKey) {
+                      sendMessage();
+                    }
+                  }}
+                ></textarea>
+                <div className={styles["submit-container"]}>
+                  <Button variant="ghost" size="icon" onClick={sendMessage}>
+                    <Send className={styles["send-icon"]} />
+                  </Button>
+                </div>
+              </div>
+            </div>
+            <ChatRoomMenu isOpen={isMenuOpen} onClose={closeMenu} />
+          </div>
+        </main>
       </div>
-    </main>
+    </>
   );
 }

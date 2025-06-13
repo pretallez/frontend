@@ -77,7 +77,7 @@ export default function CommonSheet() {
               <CommandItem
                 onSelect={() => {
                   dispatch(close());
-                  router.push(`/chat/32`);
+                  router.push(`/chat/1`);
                 }}
               >
                 <MessageCircle />

@@ -1,46 +1,58 @@
-import * as StompJs from "@stomp/stompjs";
+import { Client, Message } from "@stomp/stompjs";
+import {
+  WS_BROKER_URL,
+  SUBSCRIBE_DESTINATION,
+  PUBLISH_DESTINATION,
+} from "@/libs/config";
 
 export interface WSClientOptions {
   brokerUrl?: string;
-  subscriptionDestination?: string;
-  onMessage?: (message: StompJs.Message) => void;
+  subscribeDestination?: string;
+  publishDestination?: string;
+  chatRoomId: number | string;
+  onMessage?: (message: Message) => void;
 }
 
 export class WSClient {
-  private client: StompJs.Client;
+  private client: Client;
+  private subscribeDestination: string;
+  private publishDestination: string;
 
   constructor(options: WSClientOptions) {
-    this.client = new StompJs.Client({
-      brokerURL: options.brokerUrl || "ws://192.168.1.2:3000/ws",
+    this.subscribeDestination =
+      options.subscribeDestination ?? SUBSCRIBE_DESTINATION(options.chatRoomId);
+    this.publishDestination = options.publishDestination ?? PUBLISH_DESTINATION;
+    this.client = new Client({
+      brokerURL: options.brokerUrl ?? WS_BROKER_URL,
       reconnectDelay: 5000,
+      heartbeatIncoming: 4000,
+      heartbeatOutgoing: 4000,
       onConnect: () => {
-        if (options.subscriptionDestination && options.onMessage) {
-          this.client.subscribe(
-            options.subscriptionDestination,
-            options.onMessage
-          );
-        }
+        this.client.subscribe(this.subscribeDestination, (msg) => {
+          options.onMessage?.(msg);
+        });
       },
     });
   }
 
-  public activate() {
+  connect() {
     this.client.activate();
   }
 
-  /**
-   * 메시지를 전송한다.
-   * @param destination - 메시지 발행 대상 주소 (예: "/v1/api/chats")
-   * @param body - 메시지 내용 (문자열 또는 객체)
-   */
-  public publish(destination: string, body: any) {
-    this.client.publish({
-      destination,
-      body: typeof body === "string" ? body : JSON.stringify(body),
-    });
+  disconnect() {
+    if (this.client.active) {
+      this.client.deactivate();
+    }
   }
 
-  public disconnect() {
-    this.client.deactivate();
+  publish(body: any) {
+    if (!this.client.active) {
+      console.warn("WebSocket not connected. Activating...");
+      this.connect();
+    }
+    this.client.publish({
+      destination: this.publishDestination,
+      body: JSON.stringify(body),
+    });
   }
 }

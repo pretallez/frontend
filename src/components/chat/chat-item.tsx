@@ -37,7 +37,7 @@ const ChatItem: FunctionComponent<ChatItemProps> = ({
 }) => {
   return (
     <li
-      className={`flex w-full gap-x-3 px-3 ${styles["chat-item"]} ${
+      className={`flex w-full gap-x-3 px-3 py-2 ${styles["chat-item"]} ${
         isMyChat ? styles["my"] : ""
       }`}
     >
