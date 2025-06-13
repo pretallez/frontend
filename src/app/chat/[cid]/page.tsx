@@ -2,7 +2,7 @@
 
 import { MouseEventHandler, useEffect, useState, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { WSClient } from "@/ws/ws";
+import { WSClient } from "@/ws/wscilent";
 
 import ChatroomListItem from "@/components/chat/chatroom-list-item";
 import ChatRoomMenu from "@/components/chat/chatroom-menu";
@@ -26,7 +26,7 @@ export default function Chat() {
   const router = useRouter();
 
   const [chatList, setChatList] = useState<ChatItemProps[]>([]);
-  const [chatRoomList] = useState<any[]>([]);
+  // const [chatRoomList] = useState<any[]>([]);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [responsive, setResponsive] = useState<"left" | "right">("right");
   const [chatCount, setChatCount] = useState(0);

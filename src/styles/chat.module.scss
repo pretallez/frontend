@@ -101,7 +101,7 @@
 
 .chat-content {
   overflow-x: hidden;
-  overflow-y: auto;
+  overflow-y: scroll;
   height: calc(100% - vars.$height-chat-header - vars.$height-chat-input);
   background-color: vars.$color-neutral-100;
   & > ul {
